@@ -40,6 +40,26 @@ Note that the lines starting with `# t=` are delimiters between
 consecutive runs, and the `t` value contains the unix epoch stamp of
 the record.
 
+## list-generator
+
+There is also a `list-generator` application that lets you easily
+generate a bunch of combination-based CSV entries.  EG, if you want to
+scan for `A` and `AAAA` and `NS` records of a number of zones, it can
+help generate the combinations:
+
+    # list-generator -1 abc.com,def.com,ghi.com -2 A,AAAA,NS
+	abc.com,A
+	abc.com,AAAA
+	abc.com,NS
+	def.com,A
+	def.com,AAAA
+	def.com,NS
+	ghi.com,A
+	ghi.com,AAAA
+	ghi.com,NS
+
+It can also use data from a list in files using the `-f1` and `-f2` options.
+
 ## Prerequisites
 
 * The [Python getdns] bindings
