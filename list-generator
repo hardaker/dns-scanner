@@ -1,0 +1,48 @@
+#!/usr/bin/python
+
+import argparse
+
+parser = argparse.ArgumentParser("list-generator")
+parser.add_argument("-1", "--firstcolumnvalues",
+                    metavar="comma_list_values", type=str,
+                    help="Comma separated list of left-hand CSV columns")
+parser.add_argument("-f1", "--firstcolumnfromfile",
+                    metavar="filename", type=file,
+                    help="filename to read first column values from")
+parser.add_argument("-2", "--secondcolumnvalues",
+                    metavar="comma_list_values", type=str,
+                    help="Comma separated list of right-hand CSV columns")
+parser.add_argument("-f2", "--secondcolumnfromfile",
+                    metavar="filename", type=file,
+                    help="filename to read second column values from")
+parser.add_argument("-s", "--separator",
+                    metavar="seperator", type=str,
+                    help="Separator to use (defaults to ,)",
+                    default=",")
+
+args = parser.parse_args()
+
+if (not args.firstcolumnvalues and not args.firstcolumnfromfile) or (not args.secondcolumnvalues and not args.secondcolumnfromfile):
+    print("ERROR: One of (-1 or -f1) and one of (-2 or -f2) is required")
+    print("")
+    parser.print_help()
+    exit(1)
+
+if args.firstcolumnfromfile:
+    leftcols = []
+    for row in args.firstcolumnfromfile:
+        leftcols.append(row.strip())
+else:
+    leftcols = args.firstcolumnvalues.split(",")
+
+if args.secondcolumnfromfile:
+    rightcols = []
+    for row in args.secondcolumnfromfile:
+        rightcols.append(row.strip())
+else:
+    rightcols = args.secondcolumnvalues.split(",")
+
+
+for left in leftcols:
+    for right in rightcols:
+        print(left + args.separator + right)

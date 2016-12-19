@@ -1,0 +1,62 @@
+#!/usr/bin/python
+
+import archive_results
+import scan_records
+import argparse
+import getdns
+import csv
+import rrtypes
+import rrtypes
+
+def parse_args():
+    parser = argparse.ArgumentParser("dns_scanner")
+    parser.add_argument("zonelistfile", metavar="zonelistfile", type=file,
+                        help="CSV file with domain and type to scan")
+    parser.add_argument("-o", "--outputdir", metavar="output_directory", type=str,
+                        help="Output directory to store results in",
+                        default="./dns_scanner_results")
+    parser.add_argument("-d", "--debug",
+                        help="Turn on debugging", action="store_true")
+    parser.add_argument("-t", "--test", type=str, metavar="file",
+                        help="just scan for which results have real data behind them; output a CSV file containing only those which produce real dns responses")
+                        
+    return parser.parse_args()
+
+def read_csv(infile, savedict):
+    rrtypesobj = rrtypes.RRTypes()
+    csvh = csv.reader(infile, delimiter=',')
+    for row in csvh:
+        if row[0] not in savedict:
+            savedict[row[0]] = []
+        savedict[row[0]].append(rrtypesobj.rrtype_to_int(row[1]))
+
+def save_good_list(outfile, results):
+    rrtypesobj = rrtypes.RRTypes()
+    outfileh = open(outfile, "w")
+    for result in results:
+        outfileh.write(str(result) + "," + rrtypesobj.int_to_rrtype(result.replies_full['replies_tree'][0]['question']['qtype']) + "\n")
+
+def scan(args):
+    scanner = scan_records.Scan_Records(debug = args.debug)
+    archiver = archive_results.Archive_Results(args.outputdir)
+
+    toscan = {}
+    read_csv(args.zonelistfile, toscan)
+    print toscan
+
+    # perform the scan
+    results = scanner.query_domains_with_individual_typelists(toscan)
+
+    # if just testing, stop here and just output the results
+    if args.test:
+        save_good_list(args.test, results)
+        exit(0)
+
+    # save the results
+    archiver.archive_results(results)
+
+def main():
+    args = parse_args()
+    results = scan(args)
+
+main()
