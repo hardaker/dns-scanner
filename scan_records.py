@@ -25,7 +25,7 @@ class Scan_Records(object):
                 all_results.append(results)
             else:
                 textstatus = "bad"
-            self.__debug("[" + str(self.count) + "]%-4s: %-30.30s %d" % (textstatus, name, type))
+            self.__debug("[" + str(self.count) + "] %-4s: %-30.30s %d" % (textstatus, name, type))
         return all_results
     
     def query_domains_with_each_typelist(self, names, typelist):
@@ -38,7 +38,7 @@ class Scan_Records(object):
                     all_results.append(results)
                 else:
                     textstatus = "bad"
-                self.__debug("[" + str(self.count) + "]%-4s: %-30.30s %d" % (textstatus, name, type))
+                self.__debug("[" + str(self.count) + "] %-4s: %-30.30s %d" % (textstatus, name, type))
         return all_results
 
     def query_domains_with_individual_typelists(self, todolist):
@@ -51,7 +51,7 @@ class Scan_Records(object):
                     all_results.append(results)
                 else:
                     textstatus = "bad"
-                self.__debug("[" + str(self.count) + "]%-4s: %-30.30s %d" % (textstatus, name, rtype))
+                self.__debug("[" + str(self.count) + "] %-4s: %-30.30s %d" % (textstatus, name, rtype))
         return all_results
 
     def __debug(self, output):
