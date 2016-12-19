@@ -42,7 +42,6 @@ def scan(args):
 
     toscan = {}
     read_csv(args.zonelistfile, toscan)
-    print toscan
 
     # perform the scan
     results = scanner.query_domains_with_individual_typelists(toscan)
