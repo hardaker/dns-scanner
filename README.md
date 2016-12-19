@@ -46,6 +46,12 @@ the record.
 
 [Python getdns]: https://github.com/getdnsapi/getdns-python-bindings
 
+## TODO
+
+* Make requests execute in parallel
+* handle saving of error codes when records don't exist or servfails
+  are returned; right now only good answers are saved.
+
 ## Author
 
 	Wes Hardaker <hardaker@isi.edu>
