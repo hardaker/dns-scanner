@@ -36,6 +36,10 @@ file above may look like this:
 	>                    google.com.      300       AAAA  ipv6_address=2607:f8b0:4005:807::200e
 	E do=1, udp_payload_size: 4096
 
+Note that the lines starting with `# t=` are delimiters between
+consecutive runs, and the `t` value contains the unix epoch stamp of
+the record.
+
 ## Prerequisites
 
 * The [Python getdns] bindings
