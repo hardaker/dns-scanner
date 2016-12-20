@@ -70,10 +70,10 @@ class DnsScannerReader(object):
         for file in os.listdir(directory):
             nextfile = directory + "/" + file
             if (os.path.isdir(nextfile)):
-                print "recurse: " + nextfile
+                #print "recurse: " + nextfile 
                 output = self.read_directory_of_files(directory + "/" + file, output)
             else:
-                print "file: " + nextfile
+                #print "file: " + nextfile
                 output = self.read_file(nextfile, output)
 
         return output
