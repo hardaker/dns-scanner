@@ -61,7 +61,7 @@ class Archive_Results(object):
                                                        self.rrtypes.sprint_rdata(record))),
                               file=saveto)
                     else:
-                        print(("E do=" + str(record['do']) + ", udp_payload_size: " + str(record['udp_payload_size'])), file=saveto)
+                        print(("E do=" + str(record['do']) + " udp_payload_size=" + str(record['udp_payload_size'])), file=saveto)
     
 def main():
     ar = Archive_Results()
