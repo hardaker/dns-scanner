@@ -112,7 +112,16 @@ class RRTypes(object):
                 if all(c in string.printable for c in str(record['rdata'][key])):
                     result = result + str(record['rdata'][key])
                 elif key == 'ipv4_address':
-                    result = result + socket.inet_ntoa(record['rdata'][key])
+                    try:
+                        result = result + socket.inet_ntoa(record['rdata'][key])
+                    except:
+                        # sometimes the rdata returned by getdns is
+                        # actually in ascii escapped and thus breakns
+                        # inet_ntoa, as it's not 4 bytes.  ipv4
+                        # addresses that convert to addresses trigger
+                        # this so we'll just print the base64 raw data
+                        # for now.  sigh.
+                        result = result + base64.b64encode(str(record['rdata'][key]))
                 elif key == 'ipv6_address':
                     result = result + socket.inet_ntop(socket.AF_INET6, record['rdata'][key])
                 else:
