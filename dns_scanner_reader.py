@@ -5,6 +5,7 @@ import re
 class DnsScannerReader(object):
 
     def __init__(self):
+        # we use statse to decrease the regexp matches needed
         self.STARTING = 0
         self.INRECORD = 1
 
@@ -28,7 +29,7 @@ class DnsScannerReader(object):
     def read_file(self, file, output = None):
 
         if not output:
-            output = {}
+            output = []
 
         fh = open(file, "r")
         for line in fh:
@@ -44,7 +45,8 @@ class DnsScannerReader(object):
                 result = self.endMatch.match(line)
                 if result:
                     self.state = self.STARTING
-                    self.records.append(self.data)
+                    self.data.update(self.parse_attributes(result.group(1)))
+                    output.append(self.data)
                     self.data = { 'records': [] } # shouldn't be needed but done for safety
                 else:
                     result = self.lineMatch.match(line)
@@ -54,12 +56,11 @@ class DnsScannerReader(object):
                         record['name'] = result.group(2)
                         record['ttl'] = result.group(3)
                         record['type'] = result.group(4)
-                        print record
                         record['rrdata'] = self.parse_attributes(result.group(5))
                         self.data['records'].append(record)
                     else:
                         self.warning("unknown line in record: " + line)
-        return self.records
+        return output
 
     def warning(self, line):
         print "WARNIN: " + line
