@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import re
+import os
 
 class DnsScannerReader(object):
 
@@ -62,6 +63,21 @@ class DnsScannerReader(object):
                         self.warning("unknown line in record: " + line)
         return output
 
+    def read_directory_of_files(self, directory, output = None):
+        if not output:
+            output = []
+
+        for file in os.listdir(directory):
+            nextfile = directory + "/" + file
+            if (os.path.isdir(nextfile)):
+                print "recurse: " + nextfile
+                output = self.read_directory_of_files(directory + "/" + file, output)
+            else:
+                print "file: " + nextfile
+                output = self.read_file(nextfile, output)
+
+        return output
+
     def warning(self, line):
         print "WARNING: " + line
             
@@ -72,3 +88,13 @@ if __name__ == "__main__":
 
     results = dsr.read_file('dns_scanner_results/capturedonearth.com./A/2016/12/20.txt')
     print results
+
+    print "----------"
+    results = dsr.read_directory_of_files('dns_scanner_results')
+    print results
+
+    # summarize for easier reading
+    for result in results:
+        print "t=" + result['t']
+        print "  name: " + result['records'][0]['name']
+        print "  N:    " + str(len(result['records']))
