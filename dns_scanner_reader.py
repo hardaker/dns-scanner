@@ -63,7 +63,7 @@ class DnsScannerReader(object):
         return output
 
     def warning(self, line):
-        print "WARNIN: " + line
+        print "WARNING: " + line
             
 if __name__ == "__main__":
     dsr = DnsScannerReader()
