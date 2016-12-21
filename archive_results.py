@@ -39,7 +39,8 @@ class Archive_Results(object):
                                               ".txt")
             saveto = open(filename, "a")
 
-            print("# t=" + str(int(time.time())), file=saveto)
+            print("# t=" + str(int(time.time())) + " name=" + str(result) +
+                  " type=" + self.rrtypes.int_to_rrtype(result.replies_full['replies_tree'][0]['question']['qtype']), file=saveto)
 
             # loop through the data and send it tot the file
             data = result.replies_full
