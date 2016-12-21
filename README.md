@@ -29,12 +29,12 @@ It will produce a directory files such as:
 The contents of the `dns_scanner_results/google.com./A/2016/12/19.txt`
 file above may look like this:
 
-	# t=1482184206
+	# t=1482184206 name=google.com. type=A
 	>                    google.com.      300       AAAA  ipv6_address=2607:f8b0:4005:807::200e
-	E do=1, udp_payload_size: 4096
+	E do=1 udp_payload_size=4096
 	# t=1482184271
 	>                    google.com.      300       AAAA  ipv6_address=2607:f8b0:4005:807::200e
-	E do=1, udp_payload_size: 4096
+	E do=1 udp_payload_size=4096
 
 Note that the lines starting with `# t=` are delimiters between
 consecutive runs, and the `t` value contains the unix epoch stamp of
