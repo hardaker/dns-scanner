@@ -3,6 +3,7 @@
 import argparse
 import hadoop_analyze
 import dns_scanner_reader
+import json
 
 def parse_args():
     parser = argparse.ArgumentParser("hadoop-analyze")
@@ -10,6 +11,8 @@ def parse_args():
                         help="Directory of files to read")
     parser.add_argument("-f", "--field", metavar="field", type=str, default="ttl",
                         help="Field name to count (ttl, type, section, etc)")
+    parser.add_argument("-d", "--dump", action="store_true", help="just dump what's read in")
+    parser.add_argument("-j", "--json", action="store_true", help="just json about what's read in")
     return parser.parse_args()
 
 def main():
@@ -19,6 +22,14 @@ def main():
     dsr = dns_scanner_reader.DnsScannerReader()
     results = dsr.read_directory_of_files(args.directory)
     
+    if args.dump:
+        print results
+        exit(0)
+
+    if args.json:
+        print json.dumps(results)
+        exit(0)
+
     # analyze it
     ha = hadoop_analyze.HadoopAnalyze()
     ha.print_count_fields(results, 'ttl')
