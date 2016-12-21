@@ -33,7 +33,6 @@ def main():
     # analyze it
     ha = hadoop_analyze.HadoopAnalyze()
     path = args.path.split("/")
-    print path
     ha.print_count_fields_at_path(results, path)
 
 main()
