@@ -9,8 +9,8 @@ def parse_args():
     parser = argparse.ArgumentParser("hadoop-analyze")
     parser.add_argument("directory", metavar="directory", type=str,
                         help="Directory of files to read")
-    parser.add_argument("-f", "--field", metavar="field", type=str, default="ttl",
-                        help="Field name to count (ttl, type, section, etc)")
+    parser.add_argument("-p", "--path", metavar="path", type=str, default="records/ttl",
+                        help="Packet path to count.  EG: records/ttl or records/rrdata/ipv4_address")
     parser.add_argument("-d", "--dump", action="store_true", help="just dump what's read in")
     parser.add_argument("-j", "--json", action="store_true", help="just json about what's read in")
     return parser.parse_args()
@@ -32,6 +32,8 @@ def main():
 
     # analyze it
     ha = hadoop_analyze.HadoopAnalyze()
-    ha.print_count_fields(results, 'ttl')
+    path = args.path.split("/")
+    print path
+    ha.print_count_fields_at_path(results, path)
 
 main()
