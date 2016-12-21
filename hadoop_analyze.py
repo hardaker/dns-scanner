@@ -7,23 +7,26 @@ class HadoopAnalyze(object):
         pass
 
     def print_count_fields_at_path(self, records, paths, results = {}):
-        results = self.count_fields_at_path(records, paths, results)
+        results = self.count_fields_at_path(records, paths, 0, results)
         for result in results:
             print result + "\t" + str(results[result])
 
-    def count_fields_at_path(self, records, paths, results = {}):
-        nextpath = paths.pop(0)
-        if len(paths) == 0:
+    def count_fields_at_path(self, records, paths, depth = 0, results = {}):
+        nextpath = paths[depth]
+        #print "at " + str(depth) + ": "+ nextpath + " in " + str(paths)
+        if depth == len(paths)-1:
             self.count_fields2(records, nextpath, results)
         else:
             for record in records:
                 if nextpath not in record:
-                    print "location: " + str(record)
-                    print "ERROR: the '" + nextpath + "' field could not be found"
-                    exit(1)
-                if type(record[nextpath]) != list:
-                    record[nextpath] = [ record[nextpath] ]
-                self.count_fields_at_path(record[nextpath], copy.deepcopy(paths), results)
+                    pass
+                    #print "location: " + str(record)
+                    #print "ERROR: the '" + nextpath + "' field could not be found"
+                    #exit(1)
+                else:
+                    if type(record[nextpath]) != list:
+                        record[nextpath] = [ record[nextpath] ]
+                    self.count_fields_at_path(record[nextpath], paths, depth + 1, results)
         return results
 
     def count_fields2(self, records, field = 'ttl', results = {}):
