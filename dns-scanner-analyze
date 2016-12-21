@@ -1,0 +1,26 @@
+#!/usr/bin/python
+
+import argparse
+import hadoop_analyze
+import dns_scanner_reader
+
+def parse_args():
+    parser = argparse.ArgumentParser("hadoop-analyze")
+    parser.add_argument("directory", metavar="directory", type=str,
+                        help="Directory of files to read")
+    parser.add_argument("-f", "--field", metavar="field", type=str, default="ttl",
+                        help="Field name to count (ttl, type, section, etc)")
+    return parser.parse_args()
+
+def main():
+    args = parse_args()
+
+    # read the data
+    dsr = dns_scanner_reader.DnsScannerReader()
+    results = dsr.read_directory_of_files(args.directory)
+    
+    # analyze it
+    ha = hadoop_analyze.HadoopAnalyze()
+    ha.print_count_fields(results, 'ttl')
+
+main()
