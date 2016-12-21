@@ -6,6 +6,11 @@ class HadoopAnalyze(object):
     def __init__(self):
         pass
 
+    def print_count_fields_at_path(self, records, paths, results = {}):
+        results = self.count_fields_at_path(records, paths, results)
+        for result in results:
+            print result + "\t" + str(results[result])
+
     def count_fields_at_path(self, records, paths, results = {}):
         nextpath = paths.pop(0)
         if len(paths) == 0:
@@ -82,6 +87,11 @@ if __name__ == "__main__":
 
     print ""
     print "nsdname via return:"
-    returnpath = ha.count_fields_at_path(results, ["records", "rrdata", "nsdname"])
+    returnpath = ha.count_fields_at_path(results, ["records", "rrdata", "nsdname"], {})
+    print returnpath
+
+    print ""
+    print "ipv4 address via return:"
+    returnpath = ha.count_fields_at_path(results, ["records", "rrdata", "ipv4_address"], {})
     print returnpath
     
