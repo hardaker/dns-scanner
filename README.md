@@ -40,6 +40,17 @@ Note that the lines starting with `# t=` are delimiters between
 consecutive runs, and the `t` value contains the unix epoch stamp of
 the record.
 
+### Records that contain unprintable data
+
+Some records contain unprintable data or whitespace, which breaks the
+easy tokening strings above, are printed using base64 results instead:
+
+	# t=1482335239 name=google.com. type=TXT
+	>                    google.com.     3600        TXT  txt_strings=base64:Wyd2PXNwZjEgaW5jbHVkZTpfc3BmLmdvb2dsZS5jb20gfmFsbCdd
+	E do=1 udp_payload_size=4096
+
+Which translates to: "v=spf1 include:_spf.google.com ~all"
+
 ## list-generator
 
 There is also a `list-generator` application that lets you easily
