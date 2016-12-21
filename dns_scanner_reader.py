@@ -2,6 +2,8 @@
 
 import re
 import os
+import base64
+import string
 
 class DnsScannerReader(object):
 
@@ -12,19 +14,27 @@ class DnsScannerReader(object):
 
         self.state = self.STARTING
 
-        self.startMatch = re.compile("^# t=([0-d]+)")
-        self.endMatch   = re.compile("^E (.*)")
+        self.startMatch  = re.compile("^# t=([0-d]+)")
+        self.endMatch    = re.compile("^E (.*)")
         # linetype, name, ttl, rrtype, rrdata
-        self.lineMatch  = re.compile("^([>A\+])\s+(\S+)\s+(\d+)\s+(\S+)\s+(.*)")
-        self.tokenMatch = re.compile("([^=]+)=(.*)")
-
-        self.records    = []
+        self.lineMatch   = re.compile("^([>A\+])\s+(\S+)\s+(\d+)\s+(\S+)\s+(.*)")
+        self.tokenMatch  = re.compile("([^=]+)=(.*)")
+        self.base64Match = re.compile("^base64:(.*)")
+        self.records     = []
 
     def parse_attributes(self, tokens):
         results = {}
         for token in tokens.split(" "):
             match = self.tokenMatch.match(token)
             results[match.group(1)] = match.group(2)
+
+            # un-base64 it
+            b64 = self.base64Match.match(results[match.group(1)])
+            if b64:
+                result = base64.b64decode(b64.group(1))
+                if all(c in string.printable for c in result):
+                    results[match.group(1)] = result
+
         return results
 
     def read_file(self, file, output = None):
