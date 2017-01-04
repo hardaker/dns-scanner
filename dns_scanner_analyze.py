@@ -30,7 +30,7 @@ class DnsScannerAnalyze(object):
         for result in results:
             print result + "\t" + str(results[result])
 
-    def count_fields_at_path(self, records, paths, depth = 0, results = {}):
+    def count_fields_at_path(self, records, paths, results = {}, depth = 0):
         """
         For a given set of `records`, count each `path` in `paths` 
         within the dataset.  Return a list of counted results in the opassed
@@ -57,7 +57,7 @@ class DnsScannerAnalyze(object):
                 else:
                     if type(record[nextpath]) != list:
                         record[nextpath] = [ record[nextpath] ]
-                    self.count_fields_at_path(record[nextpath], paths, depth + 1, results)
+                    self.count_fields_at_path(record[nextpath], paths, results, depth + 1)
         return results
 
     def find_paths(self, records, prefix = "", results = {}):
