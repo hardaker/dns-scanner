@@ -2,7 +2,7 @@
 
 import copy
 
-class HadoopAnalyze(object):
+class DnsScannerAnalyze(object):
     def __init__(self):
         pass
 
@@ -57,44 +57,44 @@ if __name__ == "__main__":
     import dns_scanner_reader
     dsr = dns_scanner_reader.DnsScannerReader()
     results = dsr.read_directory_of_files('dns_scanner_results')
-
-    ha = HadoopAnalyze()
+    
+    dsa = DnsScannerAnalyze()
     print "TTLs:"
-    ha.print_count_fields(results)
+    dsa.print_count_fields(results)
 
     print ""
     print "type:"
-    ha.print_count_fields(results, 'type')
+    dsa.print_count_fields(results, 'type')
 
     print ""
     print "section:"
-    ha.print_count_fields(results, 'section')
+    dsa.print_count_fields(results, 'section')
     
     print ""
     print "do:"
     returnpath = {}
-    print ha.count_fields_at_path(results, ["do"], returnpath)
+    print dsa.count_fields_at_path(results, ["do"], returnpath)
     print returnpath
 
     print ""
     print "ttl:"
     returnpath = {}
-    print ha.count_fields_at_path(results, ["records", "ttl"], returnpath)
+    print dsa.count_fields_at_path(results, ["records", "ttl"], returnpath)
     print returnpath
 
     print ""
     print "nsdname:"
     returnpath = {}
-    print ha.count_fields_at_path(results, ["records", "rrdata", "nsdname"], returnpath)
+    print dsa.count_fields_at_path(results, ["records", "rrdata", "nsdname"], returnpath)
     print returnpath
 
     print ""
     print "nsdname via return:"
-    returnpath = ha.count_fields_at_path(results, ["records", "rrdata", "nsdname"], {})
+    returnpath = dsa.count_fields_at_path(results, ["records", "rrdata", "nsdname"], {})
     print returnpath
 
     print ""
     print "ipv4 address via return:"
-    returnpath = ha.count_fields_at_path(results, ["records", "rrdata", "ipv4_address"], {})
+    returnpath = dsa.count_fields_at_path(results, ["records", "rrdata", "ipv4_address"], {})
     print returnpath
     
