@@ -4,43 +4,43 @@ import copy
 
 class DnsScannerAnalyze(object):
     """
-Takes output from the `DnsScannerReader` class and analyzes it for patterns.
+    Takes output from the `DnsScannerReader` class and analyzes it for patterns.
 
-Example:
-    import dns_scanner_reader
-    import dns_scanner_analyze
+    Example:
+        import dns_scanner_reader
+        import dns_scanner_analyze
 
-    dsr = dns_scanner_reader.DnsScannerReader()
-    results = dsr.read_directory_of_files('dns_scanner_results')
+        dsr = dns_scanner_reader.DnsScannerReader()
+        results = dsr.read_directory_of_files('dns_scanner_results')
 
-    dsa = dns_scanner_analyze.DnsScannerAnalyze()
-    dsa.print_count_fields_at_path(results, ["records","ttl"])
+        dsa = dns_scanner_analyze.DnsScannerAnalyze()
+        dsa.print_count_fields_at_path(results, ["records","ttl"])
 
-""" 
+    """ 
 
     def __init__(self):
         pass
 
     def print_count_fields_at_path(self, records, paths, results = {}):
         """
-Calls count_fields_at_path() and then prints the results to stdout
-"""
+        Calls count_fields_at_path() and then prints the results to stdout
+        """
         results = self.count_fields_at_path(records, paths, 0, results)
         for result in results:
             print result + "\t" + str(results[result])
 
     def count_fields_at_path(self, records, paths, depth = 0, results = {}):
         """
-For a given set of `records`, count each `path` in `paths` 
-within the dataset.  Return a list of counted results in the opassed
-`results`.
+        For a given set of `records`, count each `path` in `paths` 
+        within the dataset.  Return a list of counted results in the opassed
+        `results`.
 
-Example paths might include ['records', 'ttl'] or
-['records']['rrdata']['ipv4_address'].
+        Example paths might include ['records', 'ttl'] or
+        ['records']['rrdata']['ipv4_address'].
 
-Example:
-results = scannerAnalyzer.count_fields_at_path(records, ['records','ttl'])
-"""
+        Example:
+        results = scannerAnalyzer.count_fields_at_path(records, ['records','ttl'])
+        """
         nextpath = paths[depth]
         #print "at " + str(depth) + ": "+ nextpath + " in " + str(paths)
         if depth == len(paths)-1:
@@ -58,15 +58,45 @@ results = scannerAnalyzer.count_fields_at_path(records, ['records','ttl'])
                     self.count_fields_at_path(record[nextpath], paths, depth + 1, results)
         return results
 
+    def find_paths(self, records, prefix = "", results = {}):
+        """
+        Find all the names of the path hierarchy found in the `records`.
+
+        Example:
+        results = scannerAnalyzer.find_paths(records)
+
+        """
+        for field in records:
+            if type(field) == dict: # records was an array
+                results = self.find_paths(field, prefix, results)
+            else:
+                if type(records[field]) == list:
+                    # sub array
+                    self.find_paths(records[field], prefix, results)
+                elif type(records[field]) == str:
+                    fullpath = prefix + "/" + field
+                    if fullpath not in results:
+                        results[fullpath] = 1
+                else: # type is a dictionary
+                    fullpath = prefix + "/" + field
+                    self.find_paths(records[field], fullpath, results)
+
+        return results
+
+    def print_paths(self, records):
+        results = self.find_paths(records)
+        for result in results:
+            print result
+
     def count_fields2(self, records, field = 'ttl', results = {}):
         """
-For a given set of `records`, count each `field` name in each
-record adding them all together and optionally storing them in
-the `results` dictonary.
+        For a given set of `records`, count each `field` name in each
+        record adding them all together and optionally storing them in
+        the `results` dictonary.
 
-Example:
-results = scannerAnalyzer.count_fields(records, 'ttl')
-"""
+        Example:
+        results = scannerAnalyzer.count_fields(records, 'ttl')
+        """
         for record in records:
             if field not in record:
                 pass
@@ -87,8 +117,8 @@ results = scannerAnalyzer.count_fields(records, 'ttl')
 
     def print_count_fields(self, records, field = 'ttl'):
         """
-Executes `count_fields()` and then prints the resuls to stdout
-"""
+        Executes `count_fields()` and then prints the resuls to stdout
+        """
         results = self.count_fields(records, field)
         for result in results:
             print result + "\t" + str(results[result])
@@ -110,6 +140,10 @@ if __name__ == "__main__":
     print "section:"
     dsa.print_count_fields(results, 'section')
     
+    print ""
+    print "paths:"
+    dsa.print_paths(results)
+
     print ""
     print "do:"
     returnpath = {}

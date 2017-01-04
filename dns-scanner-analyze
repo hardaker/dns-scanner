@@ -11,6 +11,7 @@ def parse_args():
                         help="Directory of files to read")
     parser.add_argument("-p", "--path", metavar="path", type=str, default="records/ttl",
                         help="Packet path to count.  EG: records/ttl or records/rrdata/ipv4_address")
+    parser.add_argument("-l", "--list-paths", action="store_true", help="list the available paths found in the data")
     parser.add_argument("-d", "--dump", action="store_true", help="just dump what's read in")
     parser.add_argument("-j", "--json", action="store_true", help="just json about what's read in")
     return parser.parse_args()
@@ -32,6 +33,12 @@ def main():
 
     # analyze it
     dsa = dns_scanner_analyze.DnsScannerAnalyze()
+
+    # just dump the found paths if requested
+    if args.list_paths:
+        dsa.print_paths(results)
+        exit(0)
+
     path = args.path.split("/")
     dsa.print_count_fields_at_path(results, path)
 
