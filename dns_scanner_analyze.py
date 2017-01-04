@@ -26,6 +26,7 @@ class DnsScannerAnalyze(object):
         Calls count_fields_at_path() and then prints the results to stdout
         """
         results = self.count_fields_at_path(records, paths, 0, results)
+
         for result in results:
             print result + "\t" + str(results[result])
 
@@ -41,6 +42,7 @@ class DnsScannerAnalyze(object):
         Example:
         results = scannerAnalyzer.count_fields_at_path(records, ['records','ttl'])
         """
+
         nextpath = paths[depth]
         #print "at " + str(depth) + ": "+ nextpath + " in " + str(paths)
         if depth == len(paths)-1:
@@ -66,6 +68,7 @@ class DnsScannerAnalyze(object):
         results = scannerAnalyzer.find_paths(records)
 
         """
+
         for field in records:
             if type(field) == dict: # records was an array
                 results = self.find_paths(field, prefix, results)
@@ -97,6 +100,7 @@ class DnsScannerAnalyze(object):
         Example:
         results = scannerAnalyzer.count_fields(records, 'ttl')
         """
+
         for record in records:
             if field not in record:
                 pass
@@ -119,6 +123,7 @@ class DnsScannerAnalyze(object):
         """
         Executes `count_fields()` and then prints the resuls to stdout
         """
+
         results = self.count_fields(records, field)
         for result in results:
             print result + "\t" + str(results[result])
