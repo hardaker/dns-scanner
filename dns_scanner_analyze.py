@@ -3,15 +3,44 @@
 import copy
 
 class DnsScannerAnalyze(object):
+    """
+Takes output from the `DnsScannerReader` class and analyzes it for patterns.
+
+Example:
+    import dns_scanner_reader
+    import dns_scanner_analyze
+
+    dsr = dns_scanner_reader.DnsScannerReader()
+    results = dsr.read_directory_of_files('dns_scanner_results')
+
+    dsa = dns_scanner_analyze.DnsScannerAnalyze()
+    dsa.print_count_fields_at_path(results, ["records","ttl"])
+
+""" 
+
     def __init__(self):
         pass
 
     def print_count_fields_at_path(self, records, paths, results = {}):
+        """
+Calls count_fields_at_path() and then prints the results to stdout
+"""
         results = self.count_fields_at_path(records, paths, 0, results)
         for result in results:
             print result + "\t" + str(results[result])
 
     def count_fields_at_path(self, records, paths, depth = 0, results = {}):
+        """
+For a given set of `records`, count each `path` in `paths` 
+within the dataset.  Return a list of counted results in the opassed
+`results`.
+
+Example paths might include ['records', 'ttl'] or
+['records']['rrdata']['ipv4_address'].
+
+Example:
+results = scannerAnalyzer.count_fields_at_path(records, ['records','ttl'])
+"""
         nextpath = paths[depth]
         #print "at " + str(depth) + ": "+ nextpath + " in " + str(paths)
         if depth == len(paths)-1:
@@ -30,6 +59,14 @@ class DnsScannerAnalyze(object):
         return results
 
     def count_fields2(self, records, field = 'ttl', results = {}):
+        """
+For a given set of `records`, count each `field` name in each
+record adding them all together and optionally storing them in
+the `results` dictonary.
+
+Example:
+results = scannerAnalyzer.count_fields(records, 'ttl')
+"""
         for record in records:
             if field not in record:
                 pass
@@ -49,6 +86,9 @@ class DnsScannerAnalyze(object):
         return results
 
     def print_count_fields(self, records, field = 'ttl'):
+        """
+Executes `count_fields()` and then prints the resuls to stdout
+"""
         results = self.count_fields(records, field)
         for result in results:
             print result + "\t" + str(results[result])
