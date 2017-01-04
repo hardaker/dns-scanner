@@ -73,21 +73,20 @@ class DnsScannerAnalyze(object):
             if type(field) == dict: # records was an array
                 results = self.find_paths(field, prefix, results)
             else:
+                fullpath = prefix + "/" + field
                 if type(records[field]) == list:
                     # sub array
-                    self.find_paths(records[field], prefix, results)
+                    self.find_paths(records[field], fullpath, results)
                 elif type(records[field]) == str:
-                    fullpath = prefix + "/" + field
                     if fullpath not in results:
                         results[fullpath] = 1
                 else: # type is a dictionary
-                    fullpath = prefix + "/" + field
                     self.find_paths(records[field], fullpath, results)
 
         return results
 
-    def print_paths(self, records):
-        results = self.find_paths(records)
+    def print_paths(self, records, results = {}):
+        results = self.find_paths(records, results = results)
         keys = results.keys()
         keys.sort()
         for result in keys:
