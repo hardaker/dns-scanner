@@ -88,7 +88,9 @@ class DnsScannerAnalyze(object):
 
     def print_paths(self, records):
         results = self.find_paths(records)
-        for result in results:
+        keys = results.keys()
+        keys.sort()
+        for result in keys:
             print result
 
     def count_fields2(self, records, field = 'ttl', results = {}):
