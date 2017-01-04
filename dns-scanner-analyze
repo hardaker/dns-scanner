@@ -8,7 +8,7 @@ import json
 def parse_args():
     parser = argparse.ArgumentParser("dns-scanner-analyze")
     parser.add_argument("directory", metavar="directory", type=str,
-                        help="Directory of files to read")
+                        help="Directory of files to read", nargs="+")
     parser.add_argument("-p", "--path", metavar="path", type=str, default="records/ttl",
                         help="Packet path to count.  EG: records/ttl or records/rrdata/ipv4_address")
     parser.add_argument("-l", "--list-paths", action="store_true", help="list the available paths found in the data")

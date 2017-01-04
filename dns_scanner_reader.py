@@ -73,18 +73,22 @@ class DnsScannerReader(object):
                         self.warning("unknown line in record: " + line)
         return output
 
-    def read_directory_of_files(self, directory, output = None):
+    def read_directory_of_files(self, directories, output = None):
         if not output:
             output = []
 
-        for file in os.listdir(directory):
-            nextfile = directory + "/" + file
-            if (os.path.isdir(nextfile)):
-                #print "recurse: " + nextfile 
-                output = self.read_directory_of_files(directory + "/" + file, output)
-            else:
-                #print "file: " + nextfile
-                output = self.read_file(nextfile, output)
+        if type(directories) is not list:
+            directories = [directories]
+
+        for directory in directories:
+            for file in os.listdir(directory):
+                nextfile = directory + "/" + file
+                if (os.path.isdir(nextfile)):
+                    #print "recurse: " + nextfile 
+                    output = self.read_directory_of_files(directory + "/" + file, output)
+                else:
+                    #print "file: " + nextfile
+                    output = self.read_file(nextfile, output)
 
         return output
 
