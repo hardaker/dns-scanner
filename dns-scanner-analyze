@@ -12,6 +12,7 @@ def parse_args():
     parser.add_argument("-p", "--path", metavar="path", type=str, default="records/ttl",
                         help="Packet path to count.  EG: records/ttl or records/rrdata/ipv4_address")
     parser.add_argument("-l", "--list-paths", action="store_true", help="list the available paths found in the data")
+    parser.add_argument("-1", "--onlyfirst", action="store_true", help="only read the first entry in each file")
     parser.add_argument("-d", "--dump", action="store_true", help="just dump what's read in")
     parser.add_argument("-j", "--json", action="store_true", help="just json about what's read in")
     return parser.parse_args()
@@ -21,6 +22,7 @@ def main():
 
     # read the data
     dsr = dns_scanner_reader.DnsScannerReader()
+    dsr.set_onlyfirst(args.onlyfirst)
     results = dsr.read_directory_of_files(args.directory)
     
     if args.dump:

@@ -6,7 +6,7 @@ import base64
 import string
 
 class DnsScannerReader(object):
-
+    
     def __init__(self):
         # we use statse to decrease the regexp matches needed
         self.STARTING = 0
@@ -21,6 +21,11 @@ class DnsScannerReader(object):
         self.tokenMatch  = re.compile("([^=]+)=(.*)")
         self.base64Match = re.compile("^base64:(.*)")
         self.records     = []
+
+        self.onlyfirst = False
+
+    def set_onlyfirst(self, onlyfirst = True):
+        self.onlyfirst = onlyfirst
 
     def parse_attributes(self, tokens):
         results = {}
@@ -59,6 +64,8 @@ class DnsScannerReader(object):
                     self.data.update(self.parse_attributes(result.group(1)))
                     output.append(self.data)
                     self.data = { 'records': [] } # shouldn't be needed but done for safety
+                    if self.onlyfirst:
+                        return output
                 else:
                     result = self.lineMatch.match(line)
                     if result:
