@@ -64,8 +64,6 @@ class DnsScannerAnalyze(object):
     def count_fields_at_path(self, records, paths, results = {}):
 
         self.operate_on_path(records, paths, self.count_fields2, results)
-        print "here"
-        print results
         return results
 
     def find_paths(self, records, prefix = "", results = {}):
