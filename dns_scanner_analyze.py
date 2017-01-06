@@ -32,7 +32,7 @@ class DnsScannerAnalyze(object):
 
     def operate_on_path(self, records, paths,
                         operator, argument = None,
-                        depth = 0):
+                        depth = 0, group = True):
         """ For a given set of `records`, search for the correct data spot
         based on the `paths` passed in.  Then call
         `operator(data, argument)` at each found point.
@@ -48,6 +48,11 @@ class DnsScannerAnalyze(object):
         #print "at " + str(depth) + ": "+ nextpath + " in " + str(paths)
         if depth == len(paths)-1:
             operator(records, nextpath, argument)
+        elif group and depth == len(paths)-2:
+            subrecords = []
+            for record in records:
+                subrecords.append(record[nextpath])
+            operator(subrecords, paths[depth+1], argument)
         else:
             for record in records:
                 if nextpath in record:
@@ -92,17 +97,15 @@ class DnsScannerAnalyze(object):
         if len(vals) > 0:
             vals.sort()
             key = ",".join(vals)
-            print key
-            print "---"
 
             if 'lastval' not in changedata:
                 changedata['lastval'] = key
                 changedata['changes'] = [ { key: 1 }]
             elif changedata['lastval'] == key:
-                print "same: " + key
+                #print "same: " + key
                 changedata['changes'][-1][key] = changedata['changes'][-1][key] + 1
             else:
-                print "changed: " + key
+                #print "changed: " + key
                 changedata['changes'].append({ key: 1 })
                 changedata['lastval'] = key
                 
@@ -111,7 +114,7 @@ class DnsScannerAnalyze(object):
         self.operate_on_path(records, paths, self.find_changes, changedata)
         for change in changedata['changes']:
             for addr in change:
-                print("%-30.30s %d" % (addr, change[addr]))
+                print("%-60s %d" % (addr, change[addr]))
 
     def find_paths(self, records, prefix = "", results = {}):
         """
