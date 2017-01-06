@@ -25,7 +25,7 @@ class DnsScannerAnalyze(object):
         """
         Calls count_fields_at_path() and then prints the results to stdout
         """
-        results = self.count_fields_at_path(records, paths, results, 0)
+        results = self.count_fields_at_path(records, paths, results)
 
         for result in results:
             print result + "\t" + str(results[result])
@@ -61,7 +61,7 @@ class DnsScannerAnalyze(object):
                     self.operate_on_path(record[nextpath], paths,
                                          operator, argument, depth + 1)
 
-    def count_fields_at_path(self, records, paths, results = {}, depth = 0):
+    def count_fields_at_path(self, records, paths, results = {}):
 
         self.operate_on_path(records, paths, self.count_fields2, results)
         print "here"
