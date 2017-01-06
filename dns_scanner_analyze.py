@@ -66,6 +66,13 @@ class DnsScannerAnalyze(object):
         self.operate_on_path(records, paths, self.count_fields2, results)
         return results
 
+    def print_data(self, records, field, bogus):
+        print records
+        print "---"
+
+    def print_data_at_path(self, records, paths):
+        self.operate_on_path(records, paths, self.print_data)
+
     def find_paths(self, records, prefix = "", results = {}):
         """
         Find all the names of the path hierarchy found in the `records`.

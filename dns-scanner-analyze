@@ -13,6 +13,8 @@ def parse_args():
                         help="Packet path to count.  EG: records/ttl or records/rrdata/ipv4_address")
     parser.add_argument("-l", "--list-paths", action="store_true", help="list the available paths found in the data")
     parser.add_argument("-1", "--onlyfirst", action="store_true", help="only read the first entry in each file")
+    parser.add_argument("-P", "--dump-records-at-path", type=str,
+                        help="only read the first entry in each file")
     parser.add_argument("-d", "--dump", action="store_true", help="just dump what's read in")
     parser.add_argument("-j", "--json", action="store_true", help="just json about what's read in")
     return parser.parse_args()
@@ -40,6 +42,12 @@ def main():
     if args.list_paths:
         dsa.print_paths(results)
         exit(0)
+
+    if args.dump_records_at_path:
+        path = args.dump_records_at_path.split("/")
+        dsa.print_data_at_path(results, path)
+        exit(0)
+
 
     path = args.path.split("/")
     dsa.print_count_fields_at_path(results, path)
