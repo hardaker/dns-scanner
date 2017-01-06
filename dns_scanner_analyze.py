@@ -33,6 +33,30 @@ class DnsScannerAnalyze(object):
     def operate_on_path(self, records, paths,
                         operator, argument = None,
                         depth = 0):
+        """ For a given set of `records`, search for the correct data spot
+        based on the `paths` passed in.  Then call
+        `operator(data, argument)` at each found point.
+
+        Example paths might include ['records', 'ttl'] or
+        ['records']['rrdata']['ipv4_address'].
+
+        This function is generic, but used by `count_fields_at_path()` and
+        `print_data()`, for example.
+        """
+
+        nextpath = paths[depth]
+        #print "at " + str(depth) + ": "+ nextpath + " in " + str(paths)
+        if depth == len(paths)-1:
+            operator(records, nextpath, argument)
+        else:
+            for record in records:
+                if nextpath in record:
+                    if type(record[nextpath]) != list:
+                        record[nextpath] = [ record[nextpath] ]
+                    self.operate_on_path(record[nextpath], paths,
+                                         operator, argument, depth + 1)
+
+    def count_fields_at_path(self, records, paths, results = {}):
         """
         For a given set of `records`, count each `path` in `paths` 
         within the dataset.  Return a list of counted results in the opassed
@@ -44,31 +68,18 @@ class DnsScannerAnalyze(object):
         Example:
         results = scannerAnalyzer.count_fields_at_path(records, ['records','ttl'])
         """
-        nextpath = paths[depth]
-        #print "at " + str(depth) + ": "+ nextpath + " in " + str(paths)
-        if depth == len(paths)-1:
-            operator(records, nextpath, argument)
-        else:
-            for record in records:
-                if nextpath not in record:
-                    pass
-                    #print "location: " + str(record)
-                    #print "ERROR: the '" + nextpath + "' field could not be found"
-                    #exit(1)
-                else:
-                    if type(record[nextpath]) != list:
-                        record[nextpath] = [ record[nextpath] ]
-                    self.operate_on_path(record[nextpath], paths,
-                                         operator, argument, depth + 1)
-
-    def count_fields_at_path(self, records, paths, results = {}):
 
         self.operate_on_path(records, paths, self.count_fields2, results)
         return results
 
     def print_data(self, records, field, bogus):
-        print records
-        print "---"
+        foundone = False
+        for record in records:
+            if field in record:
+                print record
+                foundone = True
+        if foundone:
+            print "---"
 
     def print_data_at_path(self, records, paths):
         self.operate_on_path(records, paths, self.print_data)
