@@ -11,7 +11,7 @@ class DnsScannerAnalyze(object):
         import dns_scanner_analyze
 
         dsr = dns_scanner_reader.DnsScannerReader()
-        results = dsr.read_directory_of_files('dns_scanner_results')
+        results = dsr.read_directories_of_files('dns_scanner_results')
 
         dsa = dns_scanner_analyze.DnsScannerAnalyze()
         dsa.print_count_fields_at_path(results, ["records","ttl"])
@@ -132,7 +132,7 @@ class DnsScannerAnalyze(object):
 if __name__ == "__main__":
     import dns_scanner_reader
     dsr = dns_scanner_reader.DnsScannerReader()
-    results = dsr.read_directory_of_files('dns_scanner_results')
+    results = dsr.read_directories_of_files('dns_scanner_results')
     
     dsa = DnsScannerAnalyze()
     print "TTLs:"

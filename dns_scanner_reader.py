@@ -80,7 +80,26 @@ class DnsScannerReader(object):
                         self.warning("unknown line in record: " + line)
         return output
 
-    def read_directory_of_files(self, directories, output = None):
+    def read_directory_of_files(self, directory, output = None):
+        if not output:
+            output = []
+
+        for file in os.listdir(directory):
+            nextfile = directory + "/" + file
+            if (os.path.isdir(nextfile)):
+                #print "recurse: " + nextfile 
+                output = self.read_directory_of_files(directory + "/" + file, output)
+            else:
+                output = self.read_file(nextfile, output)
+                if self.onlyfirst:
+                    # only read the first real file in the directory
+                    # XXX: this is sort of a half-hack solution that
+                    # won't work for mixed file/dir hierarchies 
+                    return output
+                    
+        return output
+
+    def read_directories_of_files(self, directories, output = None):
         if not output:
             output = []
 
@@ -88,17 +107,10 @@ class DnsScannerReader(object):
             directories = [directories]
 
         for directory in directories:
-            for file in os.listdir(directory):
-                nextfile = directory + "/" + file
-                if (os.path.isdir(nextfile)):
-                    #print "recurse: " + nextfile 
-                    output = self.read_directory_of_files(directory + "/" + file, output)
-                else:
-                    #print "file: " + nextfile
-                    output = self.read_file(nextfile, output)
+            output = self.read_directory_of_files(directory, output)
 
         return output
-
+            
     def warning(self, line):
         print "WARNING: " + line
             
@@ -111,7 +123,7 @@ if __name__ == "__main__":
     print results
 
     print "----------"
-    results = dsr.read_directory_of_files('dns_scanner_results')
+    results = dsr.read_directories_of_files('dns_scanner_results')
     print results
 
     # summarize for easier reading

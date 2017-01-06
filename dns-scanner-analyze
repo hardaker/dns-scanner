@@ -23,7 +23,7 @@ def main():
     # read the data
     dsr = dns_scanner_reader.DnsScannerReader()
     dsr.set_onlyfirst(args.onlyfirst)
-    results = dsr.read_directory_of_files(args.directory)
+    results = dsr.read_directories_of_files(args.directory)
     
     if args.dump:
         print results
