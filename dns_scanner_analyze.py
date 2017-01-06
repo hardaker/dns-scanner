@@ -41,7 +41,7 @@ class DnsScannerAnalyze(object):
         ['records']['rrdata']['ipv4_address'].
 
         This function is generic, but used by `count_fields_at_path()` and
-        `print_data()`, for example.
+        `print_data_at_path()`, for example.
         """
 
         nextpath = paths[depth]
@@ -83,6 +83,35 @@ class DnsScannerAnalyze(object):
 
     def print_data_at_path(self, records, paths):
         self.operate_on_path(records, paths, self.print_data)
+
+    def find_changes(self, records, field, changedata):
+        vals = []
+        for record in records:
+            if field in record:
+                vals.append(record[field])
+        if len(vals) > 0:
+            vals.sort()
+            key = ",".join(vals)
+            print key
+            print "---"
+
+            if 'lastval' not in changedata:
+                changedata['lastval'] = key
+                changedata['changes'] = [ { key: 1 }]
+            elif changedata['lastval'] == key:
+                print "same: " + key
+                changedata['changes'][-1][key] = changedata['changes'][-1][key] + 1
+            else:
+                print "changed: " + key
+                changedata['changes'].append({ key: 1 })
+                changedata['lastval'] = key
+                
+    def find_changes_at_path(self, records, paths):
+        changedata = { 'changes': [] }
+        self.operate_on_path(records, paths, self.find_changes, changedata)
+        for change in changedata['changes']:
+            for addr in change:
+                print("%-30.30s %d" % (addr, change[addr]))
 
     def find_paths(self, records, prefix = "", results = {}):
         """
