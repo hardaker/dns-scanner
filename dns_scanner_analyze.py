@@ -97,6 +97,7 @@ class DnsScannerAnalyze(object):
         if len(vals) > 0:
             vals.sort()
             key = ",".join(vals)
+            key = key.lower()
 
             if 'lastval' not in changedata:
                 changedata['lastval'] = key
